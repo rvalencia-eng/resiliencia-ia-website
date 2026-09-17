@@ -1,4 +1,4 @@
-// app.js - Main Application Logic for Resiliencia Artificial V2
+// app.js - Main Application Logic for Resiliencia Artificial V2 (With GA4 Tracking)
 
 document.addEventListener('DOMContentLoaded', () => {
   // Lucide Icons Init
@@ -39,6 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
           panel.classList.add('hidden');
         }
       });
+
+      // GA4 Event
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'select_operating_model_phase', {
+          'phase_number': targetPhase
+        });
+      }
     });
   });
 
@@ -75,6 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active', 'bg-cerulean-500', 'text-slate-950');
       btn.classList.remove('bg-slate-800', 'text-slate-300');
       filterCases();
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'filter_case_studies', {
+          'category': btn.dataset.filter
+        });
+      }
     });
   });
 
@@ -82,13 +95,30 @@ document.addEventListener('DOMContentLoaded', () => {
     caseSearchInput.addEventListener('input', filterCases);
   }
 
-  // Contact Form Submission
+  // Contact Form Submission V2
   const contactForm = document.getElementById('contactFormV2');
   const modalSuccess = document.getElementById('modalSuccessV2');
 
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      const name = document.getElementById('formNameV2')?.value;
+      const email = document.getElementById('formEmailV2')?.value;
+      const company = document.getElementById('formCompanyV2')?.value;
+      const service = document.getElementById('formServiceV2')?.value;
+
+      console.log('Lead recibido:', { name, email, company, service });
+
+      // GA4 Lead Generation Event
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_lead', {
+          'event_category': 'Engagement',
+          'event_label': service,
+          'value': 1.0
+        });
+      }
+
       if (modalSuccess) {
         modalSuccess.classList.remove('hidden');
         modalSuccess.classList.add('flex');
